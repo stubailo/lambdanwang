@@ -1,7 +1,7 @@
 // @flow
 /* eslint-disable no-unused-expressions */
-import type {Option} from 'option.js';
-import {some, none, of} from 'option.js';
+import type {Option} from '../option.js';
+import {some, none, of} from '../option.js';
 
 describe('option', () => {
   test('map', () => {

@@ -1,11 +1,8 @@
 {
   "presets": ["es2015", "stage-2"],
   "plugins": [
-    "transform-flow-comments",
+    "transform-flow-strip-types",
     "transform-object-rest-spread",
-    "syntax-trailing-function-commas",
-    ["module-resolver", {
-      "root": ["./src"]
-    }]
+    "syntax-trailing-function-commas"
   ]
 }

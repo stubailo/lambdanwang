@@ -1,4 +1,4 @@
-// @flow
+/* @flow */
 /* eslint-disable no-use-before-define */
 
 class AbstractOption<A> {
@@ -17,6 +17,9 @@ class AbstractOption<A> {
   }
   getOrElse<B>(def: B): (A | B) {
     return this.isEmpty ? def : this.get();
+  }
+  getOrElseL<B>(def: () => B): (A | B) {
+    return this.isEmpty ? def() : this.get();
   }
   filter(p: A => boolean): Option<A> {
     return (this.isEmpty || p(this.get())) ? (this: any) : none;

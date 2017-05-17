@@ -1,6 +1,6 @@
 // @flow
-import {left, right} from 'either.js';
-import {none, some} from 'option.js';
+import {left, right} from '../either.js';
+import {none, some} from '../option.js';
 
 describe('either', () => {
   test('map', () => {

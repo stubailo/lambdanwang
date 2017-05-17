@@ -1,7 +1,7 @@
 // @flow
 /* eslint-disable no-use-before-define */
-import type {Option} from 'option.js';
-import {some, none} from 'option.js';
+import type {Option} from './option.js';
+import {some, none} from './option.js';
 
 class AbstractEither<A, B> {
   isLeft: $Subtype<boolean>;
