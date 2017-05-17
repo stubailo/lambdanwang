@@ -1,4 +1,5 @@
 // @flow
+/* eslint-disable no-unused-expressions */
 import type {Option} from 'option.js';
 import {some, none, of} from 'option.js';
 
@@ -12,7 +13,7 @@ describe('option', () => {
       // $ExpectError
       some(23).map(strlen);
       // $ExpectError
-      (some('foo').map(strlen): Option<string>); // eslint-disable-line no-unused-expressions
+      (some('foo').map(strlen): Option<string>);
     }
   });
 
@@ -36,7 +37,7 @@ describe('option', () => {
     expect(some('foo').getOrElse(def)).toEqual('foo');
 
     if (false) {
-      (some('foo').getOrElse(23): (string | number)); // eslint-disable-line no-unused-expressions
+      (some('foo').getOrElse(23): (string | number));
     }
   });
 
@@ -66,3 +67,13 @@ describe('option', () => {
     expect(of('')).toEqual(some(''));
   });
 });
+
+if (false) {
+  const opt: Option<number> = (null: any);
+  if (opt.nonEmpty === true) {
+    (opt.value: number);
+  } else {
+    // $ExpectError
+    (opt.value: number);
+  }
+}

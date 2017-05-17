@@ -3,8 +3,8 @@
 
 class AbstractOption<A> {
   // Abstract
-  isEmpty: boolean;
-  nonEmpty: boolean;
+  isEmpty: $Subtype<boolean>;
+  nonEmpty: $Subtype<boolean>;
   get(): A {
     throw new Error('Unimplemented AbstractOption#get');
   }
@@ -30,16 +30,16 @@ class Some<A> extends AbstractOption<A> {
     this.value = value;
   }
 
-  isEmpty = false;
-  nonEmpty = true;
+  isEmpty: false = false;
+  nonEmpty: true = true;
   get(): A {
     return this.value;
   }
 }
 
 class None extends AbstractOption<any> {
-  isEmpty = true;
-  nonEmpty = false;
+  isEmpty: true = true;
+  nonEmpty: false = false;
   get() {
     throw new Error('Called None.get');
   }
