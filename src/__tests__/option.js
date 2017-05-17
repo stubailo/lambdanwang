@@ -69,11 +69,15 @@ describe('option', () => {
 });
 
 if (false) {
-  const opt: Option<number> = (null: any);
-  if (opt.nonEmpty === true) {
-    (opt.value: number);
+  const opt1: Option<number> = (null: any);
+  if (opt1.nonEmpty === true) {
+    (opt1.value: number);
   } else {
     // $ExpectError
-    (opt.value: number);
+    (opt1.value: number);
   }
+
+  const opt2: Option<{a: number}> = (null: any);
+  // $ExpectError
+  (opt2: Option<{}>);
 }

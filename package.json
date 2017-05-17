@@ -1,12 +1,12 @@
 {
   "name": "lambdanwang",
-  "version": "1.0.0",
+  "version": "1.0.3",
   "main": "dist/index.js",
   "scripts": {
     "flow": "flow",
     "lint": "eslint src",
     "jest": "jest --config jestconfig.json",
-    "build": "babel ./src --out-dir ./dist/",
+    "build": "cp package.json ./dist && babel ./src --out-dir ./dist/ --ignore '**/__tests__/*.js'",
     "test": "yarn flow && yarn lint && yarn jest"
   },
   "license": "MIT",
@@ -17,6 +17,7 @@
     "babel-jest": "^20.0.1",
     "babel-plugin-module-resolver": "^2.7.0",
     "babel-plugin-syntax-trailing-function-commas": "^6.22.0",
+    "babel-plugin-transform-flow-comments": "^6.22.0",
     "babel-plugin-transform-flow-strip-types": "^6.22.0",
     "babel-plugin-transform-object-rest-spread": "^6.23.0",
     "babel-preset-es2015": "^6.24.1",
