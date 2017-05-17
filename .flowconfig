@@ -1,0 +1,14 @@
+[version]
+0.46.0
+
+[libs]
+src/decls/
+
+[options]
+suppress_comment=\\(.\\|\n\\)*\\$ExpectError
+
+module.file_ext=.js
+module.file_ext=.json
+
+module.system.node.resolve_dirname=node_modules
+module.system.node.resolve_dirname=src

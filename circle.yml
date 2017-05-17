@@ -1,0 +1,13 @@
+dependencies:
+  override:
+    - yarn
+test:
+  override:
+    - yarn test
+machine:
+  node:
+    version: 6.5.0
+checkout:
+  post:
+    - git submodule sync
+    - git submodule update --init

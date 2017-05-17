@@ -1,0 +1,14 @@
+---
+extends:
+  - 'stripe'
+  - plugin:flowtype/recommended
+rules:
+  no-duplicate-imports: 0
+  stripe/no-function-keyword: 2
+  no-constant-condition: 0
+env:
+  jest: true
+parser: 'babel-eslint'
+plugins:
+  - stripe
+  - 'flowtype'
