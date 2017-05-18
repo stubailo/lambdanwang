@@ -7,7 +7,7 @@ type Compose3 = <A, B, C, D>(FN<C, D>, FN<B, C>, FN<A, B>, void) => FN<A, D>;
 type Compose4 = <A, B, C, D, E>(FN<D, E>, FN<C, D>, FN<B, C>, FN<A, B>, void) => FN<A, E>;
 type Compose5 = <A, B, C, D, E, F>(FN<E, F>, FN<D, E>, FN<C, D>, FN<B, C>, FN<A, B>, void) => FN<A, F>;
 type Compose6 = <A, B, C, D, E, F, G>(FN<F, G>, FN<E, F>, FN<D, E>, FN<C, D>, FN<B, C>, FN<A, B>, void) => FN<A, G>;
-type ComposeN = <A, B>(...fns: Array<FN<A, B>>) => FN<A, B>;
+type ComposeN = <T>(...fns: Array<FN<T, T>>) => FN<T, T>;
 
 type Compose = (
   Compose0 &

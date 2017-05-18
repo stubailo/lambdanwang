@@ -18,26 +18,26 @@ class LeftProjection<A, B> {
   get() {
     const {e} = this;
     if (e.isLeft === true) {
-      return e.a;
+      return e.leftValue;
     } else {
       throw new Error('Either.left.value on Right');
     }
   }
   map<X>(f: A => X): Either<X, B> {
     const {e} = this;
-    return e.isLeft === true ? left(f(e.a)) : right(e.b);
+    return e.isLeft === true ? left(f(e.leftValue)) : right(e.rightValue);
   }
   flatMap<X>(f: A => Either<X, B>): Either<X, B> {
     const {e} = this;
-    return e.isLeft === true ? f(e.a) : right(e.b);
+    return e.isLeft === true ? f(e.leftValue) : right(e.rightValue);
   }
   getOrElse<X>(def: X): (A | X) {
     const {e} = this;
-    return e.isLeft === true ? e.a : def;
+    return e.isLeft === true ? e.leftValue : def;
   }
   filter(p: A => boolean): Option<Either<A, B>> {
     const {e} = this;
-    if (e.isLeft === true && p(e.a)) {
+    if (e.isLeft === true && p(e.leftValue)) {
       return some(e);
     } else {
       return none;
@@ -45,7 +45,7 @@ class LeftProjection<A, B> {
   }
   toOption(): Option<A> {
     const {e} = this;
-    return e.isLeft === true ? some(e.a) : none;
+    return e.isLeft === true ? some(e.leftValue) : none;
   }
 }
 
@@ -57,26 +57,26 @@ class RightProjection<A, B> {
   get() {
     const {e} = this;
     if (e.isRight === true) {
-      return e.b;
+      return e.rightValue;
     } else {
       throw new Error('Either.right.value on Left');
     }
   }
   map<X>(f: B => X): Either<A, X> {
     const {e} = this;
-    return e.isRight === true ? right(f(e.b)) : left(e.a);
+    return e.isRight === true ? right(f(e.rightValue)) : left(e.leftValue);
   }
   flatMap<X>(f: B => Either<A, X>): Either<A, X> {
     const {e} = this;
-    return e.isRight === true ? f(e.b) : left(e.a);
+    return e.isRight === true ? f(e.rightValue) : left(e.leftValue);
   }
   getOrElse<X>(def: X): (B | X) {
     const {e} = this;
-    return e.isRight === true ? e.b : def;
+    return e.isRight === true ? e.rightValue : def;
   }
   filter(p: B => boolean): Option<Either<A, B>> {
     const {e} = this;
-    if (e.isRight === true && p(e.b)) {
+    if (e.isRight === true && p(e.rightValue)) {
       return some(e);
     } else {
       return none;
@@ -84,32 +84,32 @@ class RightProjection<A, B> {
   }
   toOption(): Option<B> {
     const {e} = this;
-    return e.isRight === true ? some(e.b) : none;
+    return e.isRight === true ? some(e.rightValue) : none;
   }
 }
 
 class Left<A, B> extends AbstractEither<A, B> {
-  a: A;
-  constructor(a: A) {
+  leftValue: A;
+  constructor(leftValue: A) {
     super();
-    this.a = a;
+    this.leftValue = leftValue;
   }
   isLeft: true = true;
   isRight: false = false;
 }
 
 class Right<A, B> extends AbstractEither<A, B> {
-  b: B;
-  constructor(b: B) {
+  rightValue: B;
+  constructor(rightValue: B) {
     super();
-    this.b = b;
+    this.rightValue = rightValue;
   }
   isLeft: false = false;
   isRight: true = true;
 }
 
-export const left = <A, B>(a: A): Left<A, B> => new Left(a);
-export const right = <A, B>(b: B): Right<A, B> => new Right(b);
+export const left = <A, B>(leftValue: A): Left<A, B> => new Left(leftValue);
+export const right = <A, B>(rightValue: B): Right<A, B> => new Right(rightValue);
 
 export type Either<A, B> = Left<A, B> | Right<A, B>;
 
