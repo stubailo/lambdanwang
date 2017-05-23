@@ -59,4 +59,5 @@ export type Option<A> = Some<A> | None;
 export default {
   some,
   none,
+  of,
 };
