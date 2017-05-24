@@ -1,6 +1,6 @@
 {
   "name": "lambdanwang",
-  "version": "1.0.10",
+  "version": "1.0.12",
   "main": "dist/index.js",
   "scripts": {
     "flow": "flow",
@@ -31,7 +31,7 @@
     "eslint-plugin-import": "^2.2.0",
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.10.3",
-    "eslint-plugin-stripe": "^1.0.1",
+    "eslint-plugin-stripe": "^1.0.2",
     "flow-bin": "^0.46.0",
     "flow-typed": "^2.1.2",
     "jest-cli": "^20.0.1"
