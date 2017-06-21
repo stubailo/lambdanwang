@@ -58,12 +58,18 @@ describe('either', () => {
 });
 
 if (false) {
-  test('Eithers are covariant', () => {
-    const either: Either<'a', 'b'> = (null: any);
-    (either: Either<string, 'b'>);
-    (either: Either<string, string>);
-    (either: Either<'a', string>);
-    // $ExpectError
-    (either: Either<string, number>);
+  describe('Eithers are covariant', () => {
+    test('Either', () => {
+      const either: Either<'a', 'b'> = (null: any);
+      (either: Either<string, 'b'>);
+      (either: Either<string, string>);
+      (either: Either<'a', string>);
+      // $ExpectError
+      (either: Either<string, number>);
+    });
+
+    test('left', () => {
+      (left(1): Either<number, number>);
+    });
   });
 }

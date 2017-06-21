@@ -81,16 +81,25 @@ if (false) {
     });
   });
 
-  test('Options are covariant', () => {
-    const opt: Option<'a'> = (null: any);
-    (opt: Option<string>);
-    // $ExpectError
-    (opt: Option<{}>);
-  });
+  describe('Options are covariant', () => {
+    test('Option', () => {
+      const opt: Option<'a'> = (null: any);
+      (opt: Option<string>);
+      // $ExpectError
+      (opt: Option<{}>);
+    });
 
-  test('None is a member of any option type', () => {
-    type A = {a: 1};
-    (none: Option<A>);
+    test('none', () => {
+      (none: Option<number>);
+      (none: Option<mixed>);
+    });
+
+    test('some', () => {
+      (some(1): Option<number>);
+      (some(1): Option<mixed>);
+      // $ExpectError
+      (some(1): Option<string>);
+    });
   });
 
   test('getOrElse', () => {
