@@ -1,4 +1,6 @@
 // @flow
+/* eslint-disable no-unused-expressions */
+import type {Either} from '../either.js';
 import {left, right} from '../either.js';
 import {none, some} from '../option.js';
 
@@ -54,3 +56,14 @@ describe('either', () => {
     expect(right(1).right.toOption()).toEqual(some(1));
   });
 });
+
+if (false) {
+  test('Eithers are covariant', () => {
+    const either: Either<'a', 'b'> = (null: any);
+    (either: Either<string, 'b'>);
+    (either: Either<string, string>);
+    (either: Either<'a', string>);
+    // $ExpectError
+    (either: Either<string, number>);
+  });
+}

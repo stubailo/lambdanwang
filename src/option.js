@@ -26,10 +26,13 @@ class AbstractOption<A> {
   }
 }
 
-class Some<A> extends AbstractOption<A> {
-  value: A;
+class Some<+A> extends AbstractOption<A> {
+  +value: A;
+
+  // $ExpectError cannot use covariant A in function arguments
   constructor(value: A) {
     super();
+    // $ExpectError
     this.value = value;
   }
 
@@ -40,7 +43,7 @@ class Some<A> extends AbstractOption<A> {
   }
 }
 
-class None extends AbstractOption<any> {
+class None extends AbstractOption<empty> {
   isEmpty: true = true;
   nonEmpty: false = false;
   get() {
@@ -54,7 +57,7 @@ export const of = <A>(a: A): Option<$NonMaybeType<A>> => {
   return (a === null || a === undefined) ? none : some(a);
 };
 
-export type Option<A> = Some<A> | None;
+export type Option<+A> = Some<A> | None;
 
 export default {
   some,

@@ -69,15 +69,22 @@ describe('option', () => {
 });
 
 if (false) {
-  const opt1: Option<number> = (null: any);
-  if (opt1.nonEmpty === true) {
-    (opt1.value: number);
-  } else {
-    // $ExpectError
-    (opt1.value: number);
-  }
+  describe('Unpacking options', () => {
+    test('It does inference with nonEmpty checks', () => {
+      const opt: Option<number> = (null: any);
+      if (opt.nonEmpty === true) {
+        (opt.value: number);
+      } else {
+        // $ExpectError
+        (opt.value: number);
+      }
+    });
+  });
 
-  const opt2: Option<{a: number}> = (null: any);
-  // $ExpectError
-  (opt2: Option<{}>);
+  test('Options are covariant', () => {
+    const opt: Option<'a'> = (null: any);
+    (opt: Option<string>);
+    // $ExpectError
+    (opt: Option<{}>);
+  });
 }
