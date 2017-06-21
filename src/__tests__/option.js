@@ -87,4 +87,19 @@ if (false) {
     // $ExpectError
     (opt: Option<{}>);
   });
+
+  test('None is a member of any option type', () => {
+    type A = {a: 1};
+    (none: Option<A>);
+  });
+
+  test('getOrElse', () => {
+    const opt: Option<string> = (null: any);
+    (opt.getOrElse(2): string | number);
+  });
+
+  test('getOrElseL', () => {
+    const opt: Option<string> = (null: any);
+    (opt.getOrElseL(() => 2): string | number);
+  });
 }

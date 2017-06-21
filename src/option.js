@@ -1,7 +1,7 @@
 /* @flow */
 /* eslint-disable no-use-before-define */
 
-class AbstractOption<A> {
+class AbstractOption<+A> {
   // Abstract
   isEmpty: $Subtype<boolean>;
   nonEmpty: $Subtype<boolean>;
@@ -43,7 +43,7 @@ class Some<+A> extends AbstractOption<A> {
   }
 }
 
-class None extends AbstractOption<empty> {
+class None<+A> extends AbstractOption<A> {
   isEmpty: true = true;
   nonEmpty: false = false;
   get() {
@@ -52,12 +52,12 @@ class None extends AbstractOption<empty> {
 }
 
 export const some = <A>(a: A): Some<A> => new Some(a);
-export const none = new None();
+export const none: Option<empty> = new None();
 export const of = <A>(a: A): Option<$NonMaybeType<A>> => {
   return (a === null || a === undefined) ? none : some(a);
 };
 
-export type Option<+A> = Some<A> | None;
+export type Option<+A> = Some<A> | None<A>;
 
 export default {
   some,
