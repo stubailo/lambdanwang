@@ -1,59 +1,59 @@
 // @flow
 /* eslint-disable no-unused-expressions */
 import type {Either} from '../either.js';
-import {left, right} from '../either.js';
+import {failure, success} from '../either.js';
 import {none, some} from '../option.js';
 
 describe('either', () => {
   test('map', () => {
     const strlen = (s: string): number => s.length;
-    expect(left('left').left.map(strlen)).toEqual(left(4));
-    expect(left('left').right.map(strlen)).toEqual(left('left'));
-    expect(right('right').left.map(strlen)).toEqual(right('right'));
-    expect(right('right').right.map(strlen)).toEqual(right(5));
+    expect(failure('foo').failure.map(strlen)).toEqual(failure(3));
+    expect(failure('foo').success.map(strlen)).toEqual(failure('foo'));
+    expect(success('foobar').failure.map(strlen)).toEqual(success('foobar'));
+    expect(success('foobar').success.map(strlen)).toEqual(success(6));
   });
 
   test('flatMap', () => {
-    const mapLeft = (n: number) => left('left mapped');
-    const mapRight = (n: number) => right('right mapped');
+    const mapLeft = (n: number) => failure('failure mapped');
+    const mapRight = (n: number) => success('success mapped');
 
-    expect(left(1).left.flatMap(mapLeft)).toEqual(left('left mapped'));
-    expect(left(1).left.flatMap(mapRight)).toEqual(right('right mapped'));
-    expect(left(1).right.flatMap(mapLeft)).toEqual(left(1));
-    expect(left(1).right.flatMap(mapRight)).toEqual(left(1));
+    expect(failure(1).failure.flatMap(mapLeft)).toEqual(failure('failure mapped'));
+    expect(failure(1).failure.flatMap(mapRight)).toEqual(success('success mapped'));
+    expect(failure(1).success.flatMap(mapLeft)).toEqual(failure(1));
+    expect(failure(1).success.flatMap(mapRight)).toEqual(failure(1));
 
-    expect(right(1).left.flatMap(mapLeft)).toEqual(right(1));
-    expect(right(1).left.flatMap(mapRight)).toEqual(right(1));
-    expect(right(1).right.flatMap(mapLeft)).toEqual(left('left mapped'));
-    expect(right(1).right.flatMap(mapRight)).toEqual(right('right mapped'));
+    expect(success(1).failure.flatMap(mapLeft)).toEqual(success(1));
+    expect(success(1).failure.flatMap(mapRight)).toEqual(success(1));
+    expect(success(1).success.flatMap(mapLeft)).toEqual(failure('failure mapped'));
+    expect(success(1).success.flatMap(mapRight)).toEqual(success('success mapped'));
   });
 
   test('getOrElse', () => {
     const def = 'hello';
-    expect(left(1).left.getOrElse(def)).toEqual(1);
-    expect(left(1).right.getOrElse(def)).toEqual('hello');
-    expect(right(1).left.getOrElse(def)).toEqual('hello');
-    expect(right(1).right.getOrElse(def)).toEqual(1);
+    expect(failure(1).failure.getOrElse(def)).toEqual(1);
+    expect(failure(1).success.getOrElse(def)).toEqual('hello');
+    expect(success(1).failure.getOrElse(def)).toEqual('hello');
+    expect(success(1).success.getOrElse(def)).toEqual(1);
   });
 
   test('filter', () => {
     const even = (n: number) => n % 2 === 0;
-    expect(left(1).left.filter(even)).toEqual(none);
-    expect(left(1).right.filter(even)).toEqual(none);
-    expect(left(2).left.filter(even)).toEqual(some(left(2)));
-    expect(left(2).right.filter(even)).toEqual(none);
+    expect(failure(1).failure.filter(even)).toEqual(none);
+    expect(failure(1).success.filter(even)).toEqual(none);
+    expect(failure(2).failure.filter(even)).toEqual(some(failure(2)));
+    expect(failure(2).success.filter(even)).toEqual(none);
 
-    expect(right(1).left.filter(even)).toEqual(none);
-    expect(right(1).right.filter(even)).toEqual(none);
-    expect(right(2).left.filter(even)).toEqual(none);
-    expect(right(2).right.filter(even)).toEqual(some(right(2)));
+    expect(success(1).failure.filter(even)).toEqual(none);
+    expect(success(1).success.filter(even)).toEqual(none);
+    expect(success(2).failure.filter(even)).toEqual(none);
+    expect(success(2).success.filter(even)).toEqual(some(success(2)));
   });
 
   test('toOption', () => {
-    expect(left(1).left.toOption()).toEqual(some(1));
-    expect(left(1).right.toOption()).toEqual(none);
-    expect(right(1).left.toOption()).toEqual(none);
-    expect(right(1).right.toOption()).toEqual(some(1));
+    expect(failure(1).failure.toOption()).toEqual(some(1));
+    expect(failure(1).success.toOption()).toEqual(none);
+    expect(success(1).failure.toOption()).toEqual(none);
+    expect(success(1).success.toOption()).toEqual(some(1));
   });
 });
 
@@ -68,8 +68,8 @@ if (false) {
       (either: Either<string, number>);
     });
 
-    test('left', () => {
-      (left(1): Either<number, number>);
+    test('failure', () => {
+      (failure(1): Either<number, number>);
     });
   });
 }

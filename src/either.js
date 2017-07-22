@@ -4,45 +4,45 @@ import type {Option} from './option.js';
 import {some, none} from './option.js';
 
 type EitherCommon<A, B> = {
-  +left: LeftProjection<A, B>,
-  +right: RightProjection<A, B>,
+  +failure: FailureProjection<A, B>,
+  +success: SuccessProjection<A, B>,
 };
-type Left<A, B> = EitherCommon<A, B> & {
-  isLeft: true,
-  isRight: false,
-  +leftValue: A,
+type Failure<A, B> = EitherCommon<A, B> & {
+  isFailure: true,
+  isSuccess: false,
+  +failureValue: A,
 };
 
-type Right<A, B> = EitherCommon<A, B> & {
-  isLeft: false,
-  isRight: true,
-  +rightValue: B,
+type Success<A, B> = EitherCommon<A, B> & {
+  isFailure: false,
+  isSuccess: true,
+  +successValue: B,
 };
 
 class AbstractEither<A, B> {
-  isLeft: $Subtype<boolean>;
-  isRight: $Subtype<boolean>;
-  left: LeftProjection<A, B> = (new LeftProjection((this: any)));
-  right: RightProjection<A, B> = (new RightProjection((this: any)));
+  isFailure: $Subtype<boolean>;
+  isSuccess: $Subtype<boolean>;
+  failure: FailureProjection<A, B> = (new FailureProjection((this: any)));
+  success: SuccessProjection<A, B> = (new SuccessProjection((this: any)));
 }
 
-class _LeftProjection<A, B> {
+class _FailureProjection<A, B> {
   e: Either<A, B>;
   map<X>(f: A => X): Either<X, B> {
     const {e} = this;
-    return e.isLeft ? left(f(e.leftValue)) : right(e.rightValue);
+    return e.isFailure ? failure(f(e.failureValue)) : success(e.successValue);
   }
   flatMap<X>(f: A => Either<X, B>): Either<X, B> {
     const {e} = this;
-    return e.isLeft ? f(e.leftValue) : right(e.rightValue);
+    return e.isFailure ? f(e.failureValue) : success(e.successValue);
   }
   getOrElse<X>(def: X): (A | X) {
     const {e} = this;
-    return e.isLeft ? e.leftValue : def;
+    return e.isFailure ? e.failureValue : def;
   }
   filter(p: A => boolean): Option<Either<A, B>> {
     const {e} = this;
-    if (e.isLeft && p(e.leftValue)) {
+    if (e.isFailure && p(e.failureValue)) {
       return some(e);
     } else {
       return none;
@@ -50,12 +50,12 @@ class _LeftProjection<A, B> {
   }
   toOption(): Option<A> {
     const {e} = this;
-    return e.isLeft ? some(e.leftValue) : none;
+    return e.isFailure ? some(e.failureValue) : none;
   }
 }
 
 // $ExpectError
-class LeftProjection<+A, +B> extends _LeftProjection<A, B> {
+class FailureProjection<+A, +B> extends _FailureProjection<A, B> {
   +e: Either<A, B>;
   // $ExpectError
   constructor(e: Either<A, B>) {
@@ -65,31 +65,31 @@ class LeftProjection<+A, +B> extends _LeftProjection<A, B> {
   }
   get() {
     const {e} = this;
-    if (e.isLeft) {
-      return e.leftValue;
+    if (e.isFailure) {
+      return e.failureValue;
     } else {
-      throw new Error('Either.left.value on Right');
+      throw new Error('Either.failure.value on Success');
     }
   }
 }
 
-class _RightProjection<A, B> {
+class _SuccessProjection<A, B> {
   e: Either<A, B>;
   map<X>(f: B => X): Either<A, X> {
     const {e} = this;
-    return e.isRight ? right(f(e.rightValue)) : left(e.leftValue);
+    return e.isSuccess ? success(f(e.successValue)) : failure(e.failureValue);
   }
   flatMap<X>(f: B => Either<A, X>): Either<A, X> {
     const {e} = this;
-    return e.isRight ? f(e.rightValue) : left(e.leftValue);
+    return e.isSuccess ? f(e.successValue) : failure(e.failureValue);
   }
   getOrElse<X>(def: X): (B | X) {
     const {e} = this;
-    return e.isRight ? e.rightValue : def;
+    return e.isSuccess ? e.successValue : def;
   }
   filter(p: B => boolean): Option<Either<A, B>> {
     const {e} = this;
-    if (e.isRight && p(e.rightValue)) {
+    if (e.isSuccess && p(e.successValue)) {
       return some(e);
     } else {
       return none;
@@ -97,12 +97,12 @@ class _RightProjection<A, B> {
   }
   toOption(): Option<B> {
     const {e} = this;
-    return e.isRight ? some(e.rightValue) : none;
+    return e.isSuccess ? some(e.successValue) : none;
   }
 }
 
 // $ExpectError
-class RightProjection<+A, +B> extends _RightProjection<A, B> {
+class SuccessProjection<+A, +B> extends _SuccessProjection<A, B> {
   +e: Either<A, B>;
   // $ExpectError
   constructor(e: Either<A, B>) {
@@ -112,40 +112,40 @@ class RightProjection<+A, +B> extends _RightProjection<A, B> {
   }
   get() {
     const {e} = this;
-    if (e.isRight) {
-      return e.rightValue;
+    if (e.isSuccess) {
+      return e.successValue;
     } else {
-      throw new Error('Either.right.value on Left');
+      throw new Error('Either.success.value on Failure');
     }
   }
 }
 
-class _Left<A, B> extends AbstractEither<A, B> {
-  leftValue: A;
-  constructor(leftValue: A) {
+class _Failure<A, B> extends AbstractEither<A, B> {
+  failureValue: A;
+  constructor(failureValue: A) {
     super();
-    this.leftValue = leftValue;
+    this.failureValue = failureValue;
   }
-  isLeft: true = true;
-  isRight: false = false;
+  isFailure: true = true;
+  isSuccess: false = false;
 }
 
-class _Right<A, B> extends AbstractEither<A, B> {
-  rightValue: B;
-  constructor(rightValue: B) {
+class _Success<A, B> extends AbstractEither<A, B> {
+  successValue: B;
+  constructor(successValue: B) {
     super();
-    this.rightValue = rightValue;
+    this.successValue = successValue;
   }
-  isLeft: false = false;
-  isRight: true = true;
+  isFailure: false = false;
+  isSuccess: true = true;
 }
 
-export const left = <A, B>(leftValue: A): Left<A, B> => new _Left(leftValue);
-export const right = <A, B>(rightValue: B): Right<A, B> => new _Right(rightValue);
+export const failure = <A, B>(failureValue: A): Failure<A, B> => new _Failure(failureValue);
+export const success = <A, B>(successValue: B): Success<A, B> => new _Success(successValue);
 
-export type Either<+A, +B> = Left<A, B> | Right<A, B>;
+export type Either<+A, +B> = Failure<A, B> | Success<A, B>;
 
 export default {
-  left,
-  right,
+  failure,
+  success,
 };
