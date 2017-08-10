@@ -7,13 +7,13 @@ type EitherCommon<+A, +B> = {
   +failure: FailureProjection<A, B>,
   +success: SuccessProjection<A, B>,
 };
-type Failure<+A, +B> = EitherCommon<A, B> & {
+export type Failure<+A, +B> = EitherCommon<A, B> & {
   isFailure: true,
   isSuccess: false,
   +failureValue: A,
 };
 
-type Success<+A, +B> = EitherCommon<A, B> & {
+export type Success<+A, +B> = EitherCommon<A, B> & {
   isFailure: false,
   isSuccess: true,
   +successValue: B,
