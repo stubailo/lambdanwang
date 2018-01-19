@@ -1,6 +1,6 @@
 {
   "name": "lambdanwang",
-  "version": "1.2.2",
+  "version": "1.2.4",
   "main": "dist/index.js",
   "scripts": {
     "flow": "flow",
@@ -13,10 +13,9 @@
     "test": "yarn flow && yarn lint && yarn jest"
   },
   "license": "MIT",
-  "dependencies": {
+  "devDependencies": {
     "babel-cli": "^6.24.1",
     "babel-core": "^6.24.1",
-    "babel-eslint": "^7.2.1",
     "babel-jest": "^20.0.1",
     "babel-plugin-module-resolver": "^2.7.0",
     "babel-plugin-syntax-trailing-function-commas": "^6.22.0",
@@ -32,7 +31,7 @@
     "eslint-plugin-jsx-a11y": "^2.2.3",
     "eslint-plugin-react": "^6.10.3",
     "eslint-plugin-stripe": "1.0.3",
-    "flow-bin": "0.53.1",
+    "flow-bin": "0.61.0",
     "flow-typed": "^2.1.2",
     "jest-cli": "^20.0.1"
   }
