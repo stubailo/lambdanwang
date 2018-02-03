@@ -10,6 +10,7 @@ type OptionCommon<+A> = {
   +getOrElseL: <B>(() => B) => A | B,
   +filter: ((A) => boolean) => Option<A>,
   +equals: (mixed) => boolean,
+  +inspect: () => string,
 };
 
 export type None = {
@@ -60,6 +61,20 @@ class AbstractOption<+A> {
         : anything.nonEmpty && this.get() === anything.get();
     } else {
       return false;
+    }
+  }
+  inspect() {
+    if (this.isEmpty) {
+      return 'none';
+    } else {
+      const val = this.get();
+      if (val instanceof _None || val instanceof _Some) {
+        return `some(${val.inspect()})`;
+      } else if (typeof val === 'string') {
+        return `some('${val}')`;
+      } else {
+        return `some(${String(val)})`;
+      }
     }
   }
 }

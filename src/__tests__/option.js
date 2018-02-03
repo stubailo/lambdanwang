@@ -142,6 +142,17 @@ describe('option', () => {
     };
   });
 
+  test('inspect', () => {
+    expect(none.inspect()).toBe('none');
+    expect(some(undefined).inspect()).toBe('some(undefined)');
+    expect(some(null).inspect()).toBe('some(null)');
+    expect(some(1).inspect()).toBe('some(1)');
+    expect(some('foobar').inspect()).toBe("some('foobar')");
+    expect(some([1, 2, 3]).inspect()).toBe('some(1,2,3)');
+    expect(some({}).inspect()).toBe('some([object Object])'); // haha
+    expect(some(some(3)).inspect()).toBe('some(some(3))');
+  });
+
   describe('constructors', () => {
     test('none', () => {
       expect(none.isEmpty).toBe(true);
