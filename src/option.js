@@ -1,6 +1,30 @@
 // @flow
 /* eslint-disable no-use-before-define */
 
+type OptionCommon<+A> = {
+  +get: () => A,
+  +map: <B>((A) => B) => Option<B>,
+  +flatMap: <B>((A) => Option<B>) => Option<B>,
+  +forEach: ((A) => void) => void,
+  +getOrElse: <B>(B) => A | B,
+  +getOrElseL: <B>(() => B) => A | B,
+  +filter: ((A) => boolean) => Option<A>,
+  +equals: (mixed) => boolean,
+};
+
+export type None = {
+  isEmpty: true,
+  nonEmpty: false,
+} & OptionCommon<empty>;
+
+export type Some<+A> = {
+  +value: A,
+  isEmpty: false,
+  nonEmpty: true,
+} & OptionCommon<A>;
+
+export type Option<+A> = Some<A> | None;
+
 class AbstractOption<+A> {
   // Abstract
   +isEmpty: boolean;
@@ -40,7 +64,15 @@ class AbstractOption<+A> {
   }
 }
 
-class Some<+A> extends AbstractOption<A> {
+class _None<+A> extends AbstractOption<A> {
+  isEmpty: true = true;
+  nonEmpty: false = false;
+  get() {
+    throw new Error('Called None.get');
+  }
+}
+
+class _Some<+A> extends AbstractOption<A> {
   +value: A;
 
   constructor(value: A) {
@@ -55,20 +87,16 @@ class Some<+A> extends AbstractOption<A> {
   }
 }
 
-class None<+A> extends AbstractOption<A> {
-  isEmpty: true = true;
-  nonEmpty: false = false;
-  get() {
-    throw new Error('Called None.get');
+export const some = <A>(a: A): Some<A> => new _Some(a);
+export const none: None = new _None();
+
+export const of = <A>(a: A): Option<$NonMaybeType<A>> => {
+  if (a === null || a === undefined) {
+    return none;
+  } else {
+    return some(a);
   }
-}
-
-export const some = <A>(a: A): Some<A> => new Some(a);
-export const none: Option<empty> = new None();
-export const of = <A>(a: A): Option<$NonMaybeType<A>> =>
-  a === null || a === undefined ? none : some(a);
-
-export type Option<+A> = Some<A> | None<A>;
+};
 
 export default {
   some,

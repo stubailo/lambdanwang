@@ -1,6 +1,6 @@
 // @flow
 /* eslint-disable no-unused-expressions */
-import {some, none, of, type Option} from '../option';
+import {some, none, of, type Some, type None, type Option} from '../option';
 
 describe('option', () => {
   test('map', () => {
@@ -25,7 +25,8 @@ describe('option', () => {
   });
 
   test('flatMap', () => {
-    const maybeDiv2 = (n: number) => (n % 2 === 0 ? some(n / 2) : none);
+    const maybeDiv2 = (n: number): Option<number> =>
+      n % 2 === 0 ? some(n / 2) : none;
     const div2 = (n: number) => n / 2;
     expect(none.flatMap(maybeDiv2).equals(none)).toBe(true);
     expect(
@@ -200,18 +201,16 @@ describe('option', () => {
 
     // Inference with nonEmpty
     if (opt.nonEmpty === true) {
-      (opt.value: 'a');
+      (opt: Some<'a'>);
     } else {
-      // $ExpectError Cannot access value
-      (opt.value: mixed);
+      (opt: None);
     }
 
     // Inference with isEmpty
     if (opt.isEmpty === true) {
-      // $ExpectError Cannot access value
-      (opt.value: mixed);
+      (opt: None);
     } else {
-      (opt.value: 'a');
+      (opt: Some<'a'>);
     }
   };
 });
