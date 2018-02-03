@@ -1,6 +1,11 @@
+import compose from './compose';
+import either from './either';
+import mapObject from './mapObject';
+import option from './option';
+
 module.exports = {
-  compose: require('./compose.js').default,
-  either: require('./either.js').default,
-  mapObject: require('./mapObject.js').default,
-  option: require('./option.js').default,
+  compose,
+  either,
+  mapObject,
+  option,
 };

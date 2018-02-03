@@ -1,14 +1,22 @@
 ---
 extends:
-  - 'stripe'
+  - airbnb-base
   - plugin:flowtype/recommended
+  - prettier
+  - prettier/flowtype
 rules:
-  no-duplicate-imports: 0
-  stripe/no-function-keyword: 2
+  class-methods-use-this: 0
   no-constant-condition: 0
+  no-duplicate-imports: 0
+  no-else-return: 0
+  no-restricted-syntax:
+    - 2
+    - selector: 'FunctionDeclaration'
+      message: 'Unexpected use of function keyword. Prefer arrow functions'
+  prettier/prettier: 2
 env:
   jest: true
 parser: 'babel-eslint'
 plugins:
-  - stripe
-  - 'flowtype'
+  - flowtype
+  - prettier

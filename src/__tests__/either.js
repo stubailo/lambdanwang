@@ -1,8 +1,7 @@
 // @flow
 /* eslint-disable no-unused-expressions */
-import type {Either} from '../either.js';
-import {failure, success} from '../either.js';
-import {none, some} from '../option.js';
+import {failure, success, type Either} from '../either';
+import {none, some} from '../option';
 
 describe('either', () => {
   test('map', () => {
@@ -14,18 +13,26 @@ describe('either', () => {
   });
 
   test('flatMap', () => {
-    const mapLeft = (n: number) => failure('failure mapped');
-    const mapRight = (n: number) => success('success mapped');
+    const mapLeft = () => failure('failure mapped');
+    const mapRight = () => success('success mapped');
 
-    expect(failure(1).failure.flatMap(mapLeft)).toEqual(failure('failure mapped'));
-    expect(failure(1).failure.flatMap(mapRight)).toEqual(success('success mapped'));
+    expect(failure(1).failure.flatMap(mapLeft)).toEqual(
+      failure('failure mapped'),
+    );
+    expect(failure(1).failure.flatMap(mapRight)).toEqual(
+      success('success mapped'),
+    );
     expect(failure(1).success.flatMap(mapLeft)).toEqual(failure(1));
     expect(failure(1).success.flatMap(mapRight)).toEqual(failure(1));
 
     expect(success(1).failure.flatMap(mapLeft)).toEqual(success(1));
     expect(success(1).failure.flatMap(mapRight)).toEqual(success(1));
-    expect(success(1).success.flatMap(mapLeft)).toEqual(failure('failure mapped'));
-    expect(success(1).success.flatMap(mapRight)).toEqual(success('success mapped'));
+    expect(success(1).success.flatMap(mapLeft)).toEqual(
+      failure('failure mapped'),
+    );
+    expect(success(1).success.flatMap(mapRight)).toEqual(
+      success('success mapped'),
+    );
   });
 
   test('getOrElse', () => {

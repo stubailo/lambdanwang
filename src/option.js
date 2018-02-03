@@ -9,20 +9,20 @@ class AbstractOption<+A> {
     throw new Error('Unimplemented AbstractOption#get');
   }
 
-  map<B>(f: A => B): Option<B> {
+  map<B>(f: (A) => B): Option<B> {
     return this.isEmpty ? none : some(f(this.get()));
   }
-  flatMap<B>(f: A => Option<B>): Option<B> {
+  flatMap<B>(f: (A) => Option<B>): Option<B> {
     return this.isEmpty ? none : f(this.get());
   }
-  getOrElse<B>(def: B): (A | B) {
+  getOrElse<B>(def: B): A | B {
     return this.isEmpty ? def : this.get();
   }
-  getOrElseL<B>(def: () => B): (A | B) {
+  getOrElseL<B>(def: () => B): A | B {
     return this.isEmpty ? def() : this.get();
   }
-  filter(p: A => boolean): Option<A> {
-    return (this.isEmpty || p(this.get())) ? (this: any) : none;
+  filter(p: (A) => boolean): Option<A> {
+    return this.isEmpty || p(this.get()) ? (this: any) : none;
   }
 }
 
@@ -53,9 +53,8 @@ class None<+A> extends AbstractOption<A> {
 
 export const some = <A>(a: A): Some<A> => new Some(a);
 export const none: Option<empty> = new None();
-export const of = <A>(a: A): Option<$NonMaybeType<A>> => {
-  return (a === null || a === undefined) ? none : some(a);
-};
+export const of = <A>(a: A): Option<$NonMaybeType<A>> =>
+  a === null || a === undefined ? none : some(a);
 
 export type Option<+A> = Some<A> | None<A>;
 

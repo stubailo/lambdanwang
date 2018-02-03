@@ -1,7 +1,6 @@
 // @flow
 /* eslint-disable no-use-before-define */
-import type {Option} from './option.js';
-import {some, none} from './option.js';
+import {some, none, type Option} from './option';
 
 type EitherCommon<+A, +B> = {
   +failure: FailureProjection<A, B>,
@@ -22,25 +21,25 @@ export type Success<+A, +B> = EitherCommon<A, B> & {
 class AbstractEither<A, B> {
   isFailure: $Subtype<boolean>;
   isSuccess: $Subtype<boolean>;
-  failure: FailureProjection<A, B> = (new FailureProjection((this: any)));
-  success: SuccessProjection<A, B> = (new SuccessProjection((this: any)));
+  failure: FailureProjection<A, B> = new FailureProjection((this: any));
+  success: SuccessProjection<A, B> = new SuccessProjection((this: any));
 }
 
 class _FailureProjection<A, B> {
   e: Either<A, B>;
-  map<X>(f: A => X): Either<X, B> {
+  map<X>(f: (A) => X): Either<X, B> {
     const {e} = this;
     return e.isFailure ? failure(f(e.failureValue)) : success(e.successValue);
   }
-  flatMap<X>(f: A => Either<X, B>): Either<X, B> {
+  flatMap<X>(f: (A) => Either<X, B>): Either<X, B> {
     const {e} = this;
     return e.isFailure ? f(e.failureValue) : success(e.successValue);
   }
-  getOrElse<X>(def: X): (A | X) {
+  getOrElse<X>(def: X): A | X {
     const {e} = this;
     return e.isFailure ? e.failureValue : def;
   }
-  filter(p: A => boolean): Option<Either<A, B>> {
+  filter(p: (A) => boolean): Option<Either<A, B>> {
     const {e} = this;
     if (e.isFailure && p(e.failureValue)) {
       return some(e);
@@ -75,19 +74,19 @@ class FailureProjection<+A, +B> extends _FailureProjection<A, B> {
 
 class _SuccessProjection<A, B> {
   e: Either<A, B>;
-  map<X>(f: B => X): Either<A, X> {
+  map<X>(f: (B) => X): Either<A, X> {
     const {e} = this;
     return e.isSuccess ? success(f(e.successValue)) : failure(e.failureValue);
   }
-  flatMap<X>(f: B => Either<A, X>): Either<A, X> {
+  flatMap<X>(f: (B) => Either<A, X>): Either<A, X> {
     const {e} = this;
     return e.isSuccess ? f(e.successValue) : failure(e.failureValue);
   }
-  getOrElse<X>(def: X): (B | X) {
+  getOrElse<X>(def: X): B | X {
     const {e} = this;
     return e.isSuccess ? e.successValue : def;
   }
-  filter(p: B => boolean): Option<Either<A, B>> {
+  filter(p: (B) => boolean): Option<Either<A, B>> {
     const {e} = this;
     if (e.isSuccess && p(e.successValue)) {
       return some(e);
@@ -140,8 +139,10 @@ class _Success<A, B> extends AbstractEither<A, B> {
   isSuccess: true = true;
 }
 
-export const failure = <A, B>(failureValue: A): Failure<A, B> => new _Failure(failureValue);
-export const success = <A, B>(successValue: B): Success<A, B> => new _Success(successValue);
+export const failure = <A, B>(failureValue: A): Failure<A, B> =>
+  new _Failure(failureValue);
+export const success = <A, B>(successValue: B): Success<A, B> =>
+  new _Success(successValue);
 
 export type Either<+A, +B> = Failure<A, B> | Success<A, B>;
 

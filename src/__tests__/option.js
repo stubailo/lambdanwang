@@ -1,7 +1,6 @@
 // @flow
 /* eslint-disable no-unused-expressions */
-import type {Option} from '../option.js';
-import {some, none, of} from '../option.js';
+import {some, none, of, type Option} from '../option';
 
 describe('option', () => {
   test('map', () => {
@@ -37,7 +36,7 @@ describe('option', () => {
     expect(some('foo').getOrElse(def)).toEqual('foo');
 
     if (false) {
-      (some('foo').getOrElse(23): (string | number));
+      (some('foo').getOrElse(23): string | number);
     }
   });
 
