@@ -1,10 +1,10 @@
-/* @flow */
+// @flow
 /* eslint-disable no-use-before-define */
 
 class AbstractOption<+A> {
   // Abstract
-  isEmpty: $Subtype<boolean>;
-  nonEmpty: $Subtype<boolean>;
+  +isEmpty: boolean;
+  +nonEmpty: boolean;
   get(): A {
     throw new Error('Unimplemented AbstractOption#get');
   }
@@ -15,6 +15,11 @@ class AbstractOption<+A> {
   flatMap<B>(f: (A) => Option<B>): Option<B> {
     return this.isEmpty ? none : f(this.get());
   }
+  forEach(f: (A) => void): void {
+    if (this.nonEmpty) {
+      f(this.get());
+    }
+  }
   getOrElse<B>(def: B): A | B {
     return this.isEmpty ? def : this.get();
   }
@@ -24,15 +29,22 @@ class AbstractOption<+A> {
   filter(p: (A) => boolean): Option<A> {
     return this.isEmpty || p(this.get()) ? (this: any) : none;
   }
+  equals(anything: mixed) {
+    if (anything instanceof AbstractOption) {
+      return this.isEmpty
+        ? anything.isEmpty
+        : anything.nonEmpty && this.get() === anything.get();
+    } else {
+      return false;
+    }
+  }
 }
 
 class Some<+A> extends AbstractOption<A> {
   +value: A;
 
-  // $ExpectError cannot use covariant A in function arguments
   constructor(value: A) {
     super();
-    // $ExpectError
     this.value = value;
   }
 

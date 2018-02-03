@@ -5,109 +5,213 @@ import {some, none, of, type Option} from '../option';
 describe('option', () => {
   test('map', () => {
     const strlen = (s: string): number => s.length;
-    expect(none.map(strlen)).toEqual(none);
-    expect(some('foo').map(strlen)).toEqual(some(3));
+    expect(none.map(strlen).equals(none)).toBe(true);
+    expect(
+      some('foo')
+        .map(strlen)
+        .equals(some(3)),
+    ).toBe(true);
 
-    if (false) {
-      // $ExpectError
+    () => {
+      // ---------- Flow tests ----------
+      // $ExpectError 23 is not compatible with strlen
       some(23).map(strlen);
-      // $ExpectError
+
+      // $ExpectError should be Option<number>
       (some('foo').map(strlen): Option<string>);
-    }
+
+      (some('foo').map(strlen): Option<number>);
+    };
   });
 
   test('flatMap', () => {
-    const div2 = (i: number) => (i % 2 === 0 ? some(i / 2) : none);
-    expect(none.flatMap(div2)).toEqual(none);
-    expect(some(5).flatMap(div2)).toEqual(none);
-    expect(some(6).flatMap(div2)).toEqual(some(3));
+    const maybeDiv2 = (n: number) => (n % 2 === 0 ? some(n / 2) : none);
+    const div2 = (n: number) => n / 2;
+    expect(none.flatMap(maybeDiv2).equals(none)).toBe(true);
+    expect(
+      some(5)
+        .flatMap(maybeDiv2)
+        .equals(none),
+    ).toBe(true);
+    expect(
+      some(6)
+        .flatMap(maybeDiv2)
+        .equals(some(3)),
+    ).toBe(true);
 
-    if (false) {
-      // $ExpectError
-      some('bar').flatMap(div2);
-      // $ExpectError
-      some(5).flatMap((i: number) => i / 2);
-    }
+    () => {
+      // ---------- Flow tests ----------
+      // $ExpectError div2 cannot be used with flatMap
+      some(5).flatMap(div2);
+
+      // $ExpectError 'bar' is not compatible with maybeDiv2
+      some('bar').flatMap(maybeDiv2);
+
+      (some(5).flatMap(maybeDiv2): Option<number>);
+    };
+  });
+
+  test('forEach', () => {
+    const fn1 = jest.fn();
+    none.forEach(fn1);
+    expect(fn1.mock.calls.length).toBe(0);
+
+    const fn2 = jest.fn();
+    some('foobar').forEach(fn2);
+    expect(fn2).toHaveBeenCalledWith('foobar');
+
+    () => {
+      // ---------- Flow tests ----------
+      const emptyFn: (empty) => empty = (e: empty) => e;
+
+      // none.forEach with invalid parameters is okay
+      (none.forEach(emptyFn): void);
+
+      // $ExpectError emptyFn is not compatible with 1
+      some(1).forEach(emptyFn);
+
+      const opt: Option<number> = none;
+      // $ExpectError emptyFn is not compatible with number
+      opt.forEach(emptyFn);
+    };
   });
 
   test('getOrElse', () => {
     const def = 'hello';
-    expect(none.getOrElse(def)).toEqual(def);
-    expect(some('foo').getOrElse(def)).toEqual('foo');
 
-    if (false) {
-      (some('foo').getOrElse(23): string | number);
-    }
+    expect(none.getOrElse(def)).toBe(def);
+    expect(some('foo').getOrElse(def)).toBe('foo');
+
+    () => {
+      // ---------- Flow tests ----------
+      const opt: Option<string> = none;
+      // $ExpectError should be string | number
+      (opt.getOrElse(23): string);
+
+      (opt.getOrElse(23): string | number);
+    };
+  });
+
+  test('getOrElseL', () => {
+    const def1 = jest.fn().mockReturnValue('hello');
+    expect(none.getOrElseL(def1)).toBe('hello');
+    expect(def1.mock.calls.length).toBe(1);
+
+    const def2 = jest.fn().mockReturnValue('hello');
+    expect(some('world').getOrElseL(def2)).toBe('world');
+    expect(def2.mock.calls.length).toBe(0);
+
+    () => {
+      // ---------- Flow tests ----------
+      const opt: Option<string> = none;
+      // $ExpectError function type required
+      opt.getOrElseL(2);
+
+      // $ExpectError should be string | number
+      (opt.getOrElseL(() => 2): string);
+
+      (opt.getOrElseL(() => 2): string | number);
+    };
   });
 
   test('filter', () => {
     const matches = (s: string) => !!s.match(/^sudo /);
-    expect(none.filter(matches)).toEqual(none);
-    expect(some('ls').filter(matches)).toEqual(none);
-    expect(some('sudo ls').filter(matches)).toEqual(some('sudo ls'));
+    expect(none.filter(matches).equals(none)).toBe(true);
 
-    if (false) {
-      // $ExpectError
+    expect(
+      some('ls')
+        .filter(matches)
+        .equals(none),
+    ).toBe(true);
+    expect(
+      some('sudo ls')
+        .filter(matches)
+        .equals(some('sudo ls')),
+    ).toBe(true);
+
+    () => {
+      // ---------- Flow tests ----------
+      // $ExpectError predicate must return a boolean
       none.filter(() => 'not a boolean');
-      // $ExpectError
+
+      // $ExpectError predicate argument must match
       some(23).filter(matches);
-    }
+
+      some(1).filter((i: number) => i % 2 === 0);
+    };
   });
 
-  test('constructors', () => {
-    expect(none.isEmpty).toBe(true);
-    expect(none.nonEmpty).toBe(false);
-    expect(some(1).isEmpty).toBe(false);
-    expect(some(1).nonEmpty).toBe(true);
-
-    expect(of(null)).toEqual(none);
-    expect(of(undefined)).toEqual(none);
-    expect(of(0)).toEqual(some(0));
-    expect(of('')).toEqual(some(''));
-  });
-});
-
-if (false) {
-  describe('Unpacking options', () => {
-    test('It does inference with nonEmpty checks', () => {
-      const opt: Option<number> = (null: any);
-      if (opt.nonEmpty === true) {
-        (opt.value: number);
-      } else {
-        // $ExpectError
-        (opt.value: number);
-      }
-    });
-  });
-
-  describe('Options are covariant', () => {
-    test('Option', () => {
-      const opt: Option<'a'> = (null: any);
-      (opt: Option<string>);
-      // $ExpectError
-      (opt: Option<{}>);
-    });
-
+  describe('constructors', () => {
     test('none', () => {
-      (none: Option<number>);
-      (none: Option<mixed>);
+      expect(none.isEmpty).toBe(true);
+      expect(none.nonEmpty).toBe(false);
+
+      () => {
+        // ---------- Flow tests ----------
+        // Covariance
+        (none: Option<number>);
+        (none: Option<mixed>);
+        (none: Option<empty>);
+      };
     });
 
     test('some', () => {
-      (some(1): Option<number>);
-      (some(1): Option<mixed>);
-      // $ExpectError
-      (some(1): Option<string>);
+      expect(some(1).isEmpty).toBe(false);
+      expect(some(1).nonEmpty).toBe(true);
+
+      () => {
+        // ---------- Flow tests ----------
+        // Covariance
+        (some(1): Option<number>);
+        (some(1): Option<mixed>);
+        // $ExpectError 1 is not compatible with string
+        (some(1): Option<string>);
+      };
+    });
+
+    test('of', () => {
+      expect(of(null).equals(none)).toBe(true);
+      expect(of(undefined).equals(none)).toBe(true);
+      expect(of(0).equals(some(0))).toBe(true);
+      expect(of('').equals(some(''))).toBe(true);
+
+      () => {
+        // ---------- Flow tests ----------
+        // Covariance
+        const a: ?number = 3;
+        // $ExpectError should be Option<number>
+        (of(a): Option<string>);
+
+        (of(a): Option<number>);
+
+        const b: null | string = 'b';
+        (of(b): Option<string>);
+      };
     });
   });
 
-  test('getOrElse', () => {
-    const opt: Option<string> = (null: any);
-    (opt.getOrElse(2): string | number);
-  });
+  () => {
+    // ---------- Flow tests ----------
+    // Covariance
+    const opt: Option<'a'> = none;
+    (opt: Option<string>);
+    // $ExpectError
+    (opt: Option<{}>);
 
-  test('getOrElseL', () => {
-    const opt: Option<string> = (null: any);
-    (opt.getOrElseL(() => 2): string | number);
-  });
-}
+    // Inference with nonEmpty
+    if (opt.nonEmpty === true) {
+      (opt.value: 'a');
+    } else {
+      // $ExpectError Cannot access value
+      (opt.value: mixed);
+    }
+
+    // Inference with isEmpty
+    if (opt.isEmpty === true) {
+      // $ExpectError Cannot access value
+      (opt.value: mixed);
+    } else {
+      (opt.value: 'a');
+    }
+  };
+});
