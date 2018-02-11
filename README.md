@@ -3,7 +3,7 @@
 ![Circle CI build
 status](https://circleci.com/gh/danwang/lambdanwang.svg?style=shield&circle-token=2299f0f86e45cf542f1855f46482c0e8dbe7b6f5)
 
-Lambdanwang is a small library for functional programming in JavaScript and
+Lambdanwang is a small library for functional programming with JavaScript and
 [Flow](https://flow.org/).
 
 
@@ -12,6 +12,15 @@ Lambdanwang is a small library for functional programming in JavaScript and
 ```
 yarn add lambdanwang --save
 ```
+
+## Docs
+### Containers
+- [Option](https://github.com/danwang/lambdanwang/blob/master/docs/option.md)
+- [Either](https://github.com/danwang/lambdanwang/blob/master/docs/either.md)
+
+### Functions
+- [compose](https://github.com/danwang/lambdanwang/blob/master/docs/functions.md#compose)
+- [mapObject](https://github.com/danwang/lambdanwang/blob/master/docs/functions.md#mapObject)
 
 ## License
 
