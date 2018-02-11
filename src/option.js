@@ -34,6 +34,7 @@ class AbstractOption<+A> {
     throw new Error('Unimplemented AbstractOption#get');
   }
 
+  // Concrete
   map<B>(f: (A) => B): Option<B> {
     return this.isEmpty ? none : some(f(this.get()));
   }
@@ -70,10 +71,8 @@ class AbstractOption<+A> {
       const val = this.get();
       if (val instanceof _None || val instanceof _Some) {
         return `some(${val.inspect()})`;
-      } else if (typeof val === 'string') {
-        return `some('${val}')`;
       } else {
-        return `some(${String(val)})`;
+        return `some(${JSON.stringify(val)})`;
       }
     }
   }
