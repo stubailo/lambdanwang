@@ -36,8 +36,5 @@
     "flow-typed": "^2.1.2",
     "jest-cli": "^20.0.1",
     "prettier": "^1.10.2"
-  },
-  "dependencies": {
-    "glow": "^1.2.2"
   }
 }
