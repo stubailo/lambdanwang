@@ -15,13 +15,13 @@ yarn add lambdanwang --save
 
 ## Docs
 ### Containers
-- [Option](https://github.com/danwang/lambdanwang/blob/master/docs/option.md)
-- [Either](https://github.com/danwang/lambdanwang/blob/master/docs/either.md)
+- [Option](https://github.com/stubailo/lambdanwang/blob/master/docs/option.md)
+- [Either](https://github.com/stubailo/lambdanwang/blob/master/docs/either.md)
 
 ### Functions
-- [compose](https://github.com/danwang/lambdanwang/blob/master/docs/functions.md#compose)
-- [mapObject](https://github.com/danwang/lambdanwang/blob/master/docs/functions.md#mapObject)
+- [compose](https://github.com/stubailo/lambdanwang/blob/master/docs/functions.md#compose)
+- [mapObject](https://github.com/stubailo/lambdanwang/blob/master/docs/functions.md#mapObject)
 
 ## License
 
-[MIT License](https://github.com/danwang/lambdanwang/blob/master/LICENSE)
+[MIT License](https://github.com/stubailo/lambdanwang/blob/master/LICENSE)
